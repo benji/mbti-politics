@@ -16,28 +16,45 @@
     </div>
 <script>
 var axis = ['EI', 'NS',  'FT', 'JP']
+var axis2 = ['E','I', 'N','S',  'F','T', 'J','P']
 
 // step 1 : build dep/rep -> EI/NS/FT/JP matrix
-function averagePreference(ax, party) {
-  var avgs = []
-  for (var i=0; i<2; i++) {
-    var type = ax[i] // single letter
-    var sum = 0
-    for (var j=0 ; j<mbti_politics.length; j++) {
-      if (mbti_politics[j].name.indexOf(type) >= 0) {
-        sum += mbti_politics[j][party]
-      }
+function averagePreference(ax, party, usefreq) {
+  return averagePreferenceForType(ax[0], party, usefreq) - averagePreferenceForType(ax[1], party, usefreq)
+}
+function averagePreferenceForType(type, party, usefreq) {
+  var sum = 0
+  var totfreq = 0
+  for (var j=0 ; j<mbti_politics.length; j++) {
+    if (mbti_politics[j].name.indexOf(type) >= 0) {
+      sum += mbti_politics[j][party] * (usefreq?mbti_politics[j].freq:1)
+      totfreq += mbti_politics[j].freq
     }
-    avgs[i] = sum/8
   }
-  return avgs[0] - avgs[1]
+  return sum/8/(usefreq?totfreq:1)
 }
 
+// techniques
+var groupLetterTechnique = true
+var eachLetterTechnique = false
+
+
+var usefrequencies = true
 var m = [[],[]]
-for (var i=0; i<axis.length; i++) {
-  m[0][i] = averagePreference(axis[i], 'dem')
-  m[1][i] = averagePreference(axis[i], 'rep')
+
+if (groupLetterTechnique) {
+  for (var i=0; i<axis.length; i++) {
+    m[0][i] = averagePreference(axis[i], 'dem', usefrequencies)
+    m[1][i] = averagePreference(axis[i], 'rep', usefrequencies)
+  }
 }
+if (eachLetterTechnique) {
+  for (var i=0; i<axis2.length; i++) {
+    m[0][i] = averagePreferenceForType(axis2[i], 'dem', usefrequencies)
+    m[1][i] = averagePreferenceForType(axis2[i], 'rep', usefrequencies)
+  }
+}
+
 
 console.log(m)
 
@@ -63,7 +80,12 @@ for (var i=0 ; i<mbti_politics.length; i++) {
       var type = axis[j][k] // single letter
       if (name.indexOf(type) >= 0) {
         points[name] = points[name] || [] // create array if not yet created
-        points[name][j] = 1 - k*2 // 0 -> 1 ; 1 -> -1
+        if (groupLetterTechnique) {
+          points[name][j] = 1 - k*2 // 0 -> 1 ; 1 -> -1
+        }
+        if (eachLetterTechnique) {
+          points[name][j] = 1 - k // 0 -> 1 ; 1 -> 0
+        }
       }
     }
   }
@@ -76,7 +98,7 @@ for (var i=0 ; i<mbti_politics.length; i++) {
   
   var label = name+' ('+diff+')'
   graph.push({ data: projectPoint(points[name]),
-    points: { symbol: diff>0?"cross":"diamond" },
+    points: { symbol: diff>0?"circle":diff<0?"triangle":"cross" },
     mylabel: label
   })
   console.log(label)
