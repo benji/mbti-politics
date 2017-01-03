@@ -19,3 +19,12 @@ var mbti_politics = [
   {name: 'ENFJ', dem: 35, rep: 35, freq: 2.5},
   {name: 'ENTJ', dem: 26, rep: 40, freq: 1.8}
 ]
+
+// computes independents
+for (var i in mbti_politics)
+  mbti_politics[i].ind = 100 - mbti_politics[i].dem - mbti_politics[i].rep
+
+function findByName(name) {
+  for (var i in mbti_politics)
+    if (mbti_politics[i].name == name) return mbti_politics[i]
+}

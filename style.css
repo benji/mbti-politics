@@ -4,17 +4,15 @@ body {
 }
 body, input { font-size:12px; }
 span.partydef { display: block; margin: 5px 0; }
-#container {
-  width:500px;
+table {
   margin: 100px auto;
 }
 
-#graph {
-  margin: 0 auto;
-  margin-top: 100px;
-  margin-bottom: 20px;
+.graph {
+  margin: 20px;
   width:500px;
   height: 500px;
 }
+td {min-width: 300px;}
 
 p {text-align:right;}
