@@ -2,7 +2,7 @@
 
 Principal Component Analysis to correlate political affiliation with MBTI types.
 
-@see [demo](http://graphitfor.me/poc/mbti-politics/).
+@see [demo](http://graphitfor.me/poc/mbti-politics/index.html).
 
 Data from:
 
