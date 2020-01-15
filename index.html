@@ -14,6 +14,9 @@
   <body>
 
     <div id="container">
+      <ul id="per-type">
+      </ul>
+
       <table>
         <tr>
           <th></th>
@@ -30,34 +33,48 @@
           <th><div class="graph" id="graph21"></th>
           <th><div class="graph" id="graph22"></th>
         </tr>
-        <tr>
+        <!--tr>
           <th>Per MBTI variation on E/I, N/S, F/T, J/P</th>
           <th><div class="graph" id="graph31"></th>
           <th><div class="graph" id="graph32"></th>
-        </tr>
+        </tr-->
       </table>
       <p>PCA MBTI political affiliation.</p>
     </div>
 
 <script>
-var axisSpecial = ['EI', 'NS',  'FT', 'JP']
-var axisEachLetter = ['E','I', 'N','S',  'F','T', 'J','P']
+var categoriesRatioMethod = ['EI', 'NS',  'FT', 'JP']
+var eachLetterMethod = ['E','I', 'N','S',  'F','T', 'J','P']
 var axisAllTypes = []
 var m, axisVectors, labels, ratioFunc
 
-for (var i in mbti_politics) axisAllTypes.push(mbti_politics[i].name)
+for (var i in data) axisAllTypes.push(data[i].name)
 
 // inputs here
-var selectedAxis = axisSpecial
+var selectedAxis = categoriesRatioMethod
 var usefrequencies = false
 
+function toPct(v) {
+  return Math.floor(v*1000)/10;
+}
+
+function showTypeBreakdown(t1, t2) {
+  $("#per-type").append("<li>"+t1+": "+toPct(breakdownForType(t1, 'dem'))+"% democrats - "+toPct(breakdownForType(t1, 'rep'))+"% republicans</li>")
+  $("#per-type").append("<li>"+t2+": "+toPct(breakdownForType(t2, 'dem'))+"% democrats - "+toPct(breakdownForType(t2, 'rep'))+"% republicans</li>")
+}
+
 $( document ).ready(function() {
-  plotMbtiPolitics(axisEachLetter, false, "#graph11")
-  plotMbtiPolitics(axisEachLetter, true, "#graph12")
+  showTypeBreakdown("I","E")
+  showTypeBreakdown("N","S")
+  showTypeBreakdown("T","F")
+  showTypeBreakdown("P","J")
+
+  plotMbtiPolitics(eachLetterMethod, false, "#graph11")
+  plotMbtiPolitics(eachLetterMethod, true, "#graph12")
   plotMbtiPolitics(axisAllTypes, false, "#graph21")
   plotMbtiPolitics(axisAllTypes, true, "#graph22")
-  plotMbtiPolitics(axisSpecial, false, "#graph31")
-  plotMbtiPolitics(axisSpecial, true, "#graph32")
+  //plotMbtiPolitics(categoriesRatioMethod, false, "#graph31")
+  //plotMbtiPolitics(categoriesRatioMethod, true, "#graph32")
 });
 
 </script>

@@ -1,20 +1,29 @@
+function breakdownForType(type, party) {
+  var sum = 0
+  for (var j=0 ; j<data.length; j++) {
+    if (data[j].name.indexOf(type) >= 0) {
+      sum += data[j][party]
+    }
+  }
+  return sum
+}
 function averagePreferenceForType(type, party, usefreq) {
   var sum = 0
   var totfreq = 0
-  for (var j=0 ; j<mbti_politics.length; j++) {
-    if (mbti_politics[j].name.indexOf(type) >= 0) {
-      sum += mbti_politics[j][party] * (usefreq?mbti_politics[j].freq:1)
-      totfreq += mbti_politics[j].freq
+  for (var j=0 ; j<data.length; j++) {
+    if (data[j].name.indexOf(type) >= 0) {
+      sum += data[j][party] * (usefreq?data[j].freq:1)
+      totfreq += data[j].freq
     }
   }
   return sum/8/(usefreq?totfreq:1)
 }
 
-function buildAverageMatrixOntoAxis(axis, usefreq) {
+function buildAverageMatrixOntoAxis(types, usefreq) {
   var m = [[],[]]
-  for (var i=0; i<axis.length; i++) {
-    m[0][i] = averagePreferenceForType(axis[i], 'dem', usefreq)
-    m[1][i] = averagePreferenceForType(axis[i], 'rep', usefreq)
+  for (var i=0; i<types.length; i++) {
+    m[0][i] = averagePreferenceForType(types[i], 'dem', usefreq)
+    m[1][i] = averagePreferenceForType(types[i], 'rep', usefreq)
   }
   return m
 }
@@ -45,10 +54,10 @@ function buildIdentityMatrix(len) {
 
 function buildSpecialMatrix(axis) {
   var m = []
-  for (var i=0; i<mbti_politics.length; i++) {
+  for (var i=0; i<data.length; i++) {
     m[i] = m[i] || []
     for (var j=0; j<axis.length; j++) {
-      m[i][j] = mbti_politics[i].name.indexOf(axis[j][0]) > 0 ? 1 : -1
+      m[i][j] = data[i].name.indexOf(axis[j][0]) > 0 ? 1 : -1
     }
   }
   return m
@@ -94,8 +103,8 @@ function getRepDemRatio(values, idx) {
 // returns in [0;1]
 function getRepDemRatioSpecial(values, idx) {
   var diff, maxdiff = 0, mindiff = 0
-  for (var i in mbti_politics) {
-    var d = mbti_politics[i].dem - mbti_politics[i].rep // dem - rep
+  for (var i in data) {
+    var d = data[i].dem - data[i].rep // dem - rep
     if (i==idx) diff = d
     if (d>maxdiff) maxdiff = d
     if (d<mindiff) mindiff = d
@@ -106,10 +115,11 @@ function getRepDemRatioSpecial(values, idx) {
 
 function plotMbtiPolitics(selectedAxis, usefrequencies, graphSelector) {
   
-  if (selectedAxis == axisSpecial) {
-    m = buildAverageDiffMatrixOntoAxis(axisSpecial, usefrequencies)
-    axisVectors = buildSpecialMatrix(axisSpecial)
-    labels = axisEachLetter
+  if (selectedAxis == categoriesRatioMethod) {
+    m = buildAverageDiffMatrixOntoAxis(categoriesRatioMethod, usefrequencies)
+    console.log(m)
+    axisVectors = buildSpecialMatrix(categoriesRatioMethod)
+    labels = eachLetterMethod
     ratioFunc = getRepDemRatioSpecial
   } else {
     m = buildAverageMatrixOntoAxis(selectedAxis, usefrequencies)

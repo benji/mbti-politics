@@ -2,15 +2,21 @@ body {
   margin: 0px;
   padding: 0px;
 }
-body, input { font-size:12px; }
+body, input {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 14px;
+}
 span.partydef { display: block; margin: 5px 0; }
 table {
   margin: 100px auto;
 }
-
+#container {
+  width: 1200px;
+  margin: 0 auto;
+}
 .graph {
-  margin: 20px;
   width:500px;
+  margin: 20px;
   height: 500px;
 }
 td {min-width: 300px;}
